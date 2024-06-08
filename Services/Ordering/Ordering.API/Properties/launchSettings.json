@@ -3,16 +3,16 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:9001",
+      "applicationUrl": "http://localhost:32301",
       "sslPort": 0
     }
   },
   "profiles": {
-    "Basket.API": {
+    "Ordering.API": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:9001",
+      "applicationUrl": "http://localhost:5225",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

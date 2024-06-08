@@ -31,9 +31,11 @@ namespace Basket.API.Controllers
         [ProducesResponseType(typeof(ShoppingCartResponse), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<ShoppingCartResponse>> CreateBasket([FromBody] CreateShoppingCartCommand createShoppingCartCommand)
         {
+            
             var basket = await _mediator.Send(createShoppingCartCommand);
             return Ok(basket);
         }
+
         [HttpDelete]
         [Route("[action]/{username}", Name = "DeleteBasketByUsername")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
