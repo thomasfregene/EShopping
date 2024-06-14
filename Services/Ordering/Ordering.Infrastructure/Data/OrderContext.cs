@@ -14,6 +14,34 @@ namespace Ordering.Infrastructure.Data
         public OrderContext(DbContextOptions<OrderContext> options)
             : base(options)
         {
+
+        }
+
+
+        public DbSet<Order> Orders { get; set; }
+         
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            foreach (var entry in ChangeTracker.Entries<EntityBase>())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.Entity.DateCreated = DateTime.Now;
+                        entry.Entity.CreatedBy = "rahul"; //TODO: This will be replaced Identity Server
+                        break;
+                    case EntityState.Modified:
+                        entry.Entity.LastModifiedDate = DateTime.Now;
+                        entry.Entity.LastModifiedBy = "rahul"; //TODO: This will be replaced Identity Server
+                        break;
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
+        /*public OrderContext(DbContextOptions<OrderContext> options)
+            : base(options)
+        {
             
         }
         public DbSet<Order> Orders { get; set; }
@@ -37,6 +65,6 @@ namespace Ordering.Infrastructure.Data
                 }
             }
             return base.SaveChangesAsync(cancellationToken);
-        }
+        }*/
     }
 }

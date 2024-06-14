@@ -12,12 +12,20 @@ namespace Ordering.Infrastructure.Data
     {
         public static async Task SeedAsync(OrderContext orderContext, ILogger<OrderContextSeed> logger)
         {
-            if (!orderContext.Orders.Any())
+            try
             {
-                orderContext.Orders.AddRange(GetOrders());
-                await orderContext.SaveChangesAsync();
-                logger.LogInformation($"Ordering database seeded: {typeof(OrderContext).Name}");
+                if (!orderContext.Orders.Any())
+                {
+                    orderContext.Orders.AddRange(GetOrders());  
+                    await orderContext.SaveChangesAsync();
+                    logger.LogInformation($"Ordering database {typeof(OrderContext).Name}: seeded");
 
+                }
+            }
+            catch (Exception ex)
+            {
+
+                await Console.Out.WriteLineAsync(ex.Message); 
             }
         }
 

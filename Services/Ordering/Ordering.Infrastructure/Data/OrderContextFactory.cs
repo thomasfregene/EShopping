@@ -13,7 +13,7 @@ namespace Ordering.Infrastructure.Data
         public OrderContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<OrderContext>();
-            optionsBuilder.UseSqlServer("Data Source=OrderDb");
+            optionsBuilder.UseSqlServer("Data Source=OrdermcrDb");
             return new OrderContext(optionsBuilder.Options);
         }
     }
