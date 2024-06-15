@@ -1,4 +1,7 @@
-﻿    using HealthChecks.UI.Client;
+﻿using EventBus.Messges.Common;
+using HealthChecks.UI.Client;
+using MassTransit;
+using Ordering.API.EventBusConsumer;
 using Ordering.Application.Extensions;
 using Ordering.Infrastructure.Data;
 using Ordering.Infrastructure.Extensions;
@@ -21,6 +24,7 @@ namespace Ordering.API
             services.AddApplicationServices();
             services.AddInfraServices(Configuration);
             services.AddAutoMapper(typeof(Startup));
+            services.AddScoped<BasketOrderingConsumer>();
 
             services.AddSwaggerGen(c =>
             {
@@ -31,11 +35,26 @@ namespace Ordering.API
                 });
             });
             services.AddHealthChecks().Services.AddDbContext<OrderContext>();
+
+            services.AddMassTransit(config =>
+            {
+                config.AddConsumer<BasketOrderingConsumer>();
+                config.UsingRabbitMq((ctx, cfg) =>
+                {
+                    cfg.Host(Configuration["EventBusSettings:HostAddress"]);
+                    cfg.ReceiveEndpoint(EventBusConstants.BasketCheckoutQueue, c =>
+                    {
+                        c.ConfigureConsumer<BasketOrderingConsumer>(ctx);
+                    });
+                });
+            });
+
+            services.AddMassTransitHostedService();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+           if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
