@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,14 @@ namespace Ocelot.ApiGateway
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            var authScheme = "EShoppingGatewayAuthScheme";
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(authScheme, opt =>
+                {
+                    opt.Authority = "https://localhost:9009";
+                    opt.Audience = "EShoppingGateway";
+                });
+
             services.AddOcelot()
                 .AddCacheManager(o => o.WithDictionaryHandle());
         }

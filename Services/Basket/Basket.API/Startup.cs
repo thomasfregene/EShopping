@@ -7,6 +7,9 @@ using Discount.Grpc.Protos;
 using HealthChecks.UI.Client;
 using MassTransit;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -23,7 +26,7 @@ namespace Basket.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            //services.AddControllers();
             services.AddApiVersioning();
             //Redis settings
             services.AddStackExchangeRedisCache(options =>
@@ -55,6 +58,22 @@ namespace Basket.API
             });
 
             services.AddMassTransitHostedService();
+
+            var userPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+
+            services.AddControllers(config =>
+            {
+                config.Filters.Add(new AuthorizeFilter(userPolicy));
+            });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opt =>
+                {
+                    opt.Authority = "https://localhost:9009";
+                    opt.Audience = "Basket";
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -71,6 +90,7 @@ namespace Basket.API
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

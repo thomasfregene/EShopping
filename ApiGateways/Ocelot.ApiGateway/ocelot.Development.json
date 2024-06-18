@@ -76,7 +76,7 @@
     },
     //Basket API
     {
-      "DownstreamPathTemplate": "/api/v1/Basket/GetBasket/{userName}",
+      "DownstreamPathTemplate": "/api/v1/Basket/GetBasketByUsername/{username}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -84,11 +84,11 @@
           "Port": "9001"
         }
       ],
-      "UpstreamPathTemplate": "/Basket/GetBasket/{userName}",
+      "UpstreamPathTemplate": "/Basket/GetBasket/{username}",
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
-      "DownstreamPathTemplate": "/api/v1/Basket/DeleteBasket/{userName}",
+      "DownstreamPathTemplate": "/api/v1/Basket/DeleteBasket/{username}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -96,7 +96,7 @@
           "Port": "9001"
         }
       ],
-      "UpstreamPathTemplate": "/Basket/DeleteBasket/{userName}",
+      "UpstreamPathTemplate": "/Basket/DeleteBasket/{username}",
       "UpstreamHttpMethod": [ "DELETE" ]
     },
     {
