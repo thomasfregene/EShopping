@@ -1,4 +1,5 @@
 ﻿
+using Common.Logging.Correlation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.Application.Commands;
@@ -11,9 +12,15 @@ namespace Ordering.API.Controllers
     public class OrderController : ApiController
     {
         private readonly IMediator _mediator;
-        public OrderController(IMediator mediator)
+        private readonly ILogger<OrderController> _logger;
+        private readonly ICorrelationIdGenerator _correlationIdGenerator;
+
+        public OrderController(IMediator mediator, ILogger<OrderController> logger, ICorrelationIdGenerator correlationIdGenerator)
         {
             _mediator = mediator;
+            _logger = logger;
+            _correlationIdGenerator = correlationIdGenerator;
+            _logger.LogInformation("CorrelationId {correlationId}:", _correlationIdGenerator.Get());
         }
 
         [HttpGet("{username}", Name ="GetOrderByUsername")]

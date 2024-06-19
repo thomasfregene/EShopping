@@ -1,4 +1,5 @@
-﻿using EventBus.Messges.Common;
+﻿using Common.Logging.Correlation;
+using EventBus.Messges.Common;
 using HealthChecks.UI.Client;
 using MassTransit;
 using Ordering.API.EventBusConsumer;
@@ -62,6 +63,7 @@ namespace Ordering.API
             }
 
             app.UseHttpsRedirection();
+            //app.AddCorrelationIdMiddleware();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

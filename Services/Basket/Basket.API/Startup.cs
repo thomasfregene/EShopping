@@ -3,6 +3,7 @@ using Basket.Application.Handlers;
 using Basket.Application.Mapper;
 using Basket.Core.Repositories;
 using Basket.Infrastructure.Repositories;
+using Common.Logging.Correlation;
 using Discount.Grpc.Protos;
 using HealthChecks.UI.Client;
 using MassTransit;
@@ -26,7 +27,7 @@ namespace Basket.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddControllers();
+            services.AddControllers();
             services.AddApiVersioning();
             //Redis settings
             services.AddStackExchangeRedisCache(options =>
@@ -35,6 +36,7 @@ namespace Basket.API
             });
             services.AddMediatR(typeof(CreateShoppingCartCommandHandler).GetTypeInfo().Assembly);
             services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddScoped<ICorrelationIdGenerator, CorrelationIdGenerator>();
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<DiscountGrpcService>();
             services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(o => o.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]));
@@ -59,7 +61,7 @@ namespace Basket.API
 
             services.AddMassTransitHostedService();
 
-            var userPolicy = new AuthorizationPolicyBuilder()
+           /* var userPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .Build();
 
@@ -73,7 +75,7 @@ namespace Basket.API
                 {
                     opt.Authority = "https://localhost:9009";
                     opt.Audience = "Basket";
-                });
+                });*/
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -89,8 +91,9 @@ namespace Basket.API
             }
 
             app.UseHttpsRedirection();
+            //app.AddCorrelationIdMiddleware();
             app.UseRouting();
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

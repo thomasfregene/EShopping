@@ -67,6 +67,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nginx", "nginx", "{01FF54E3
 		nginx.local.conf = nginx.local.conf
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Logging", "Infrastructure\Common.Logging\Common.Logging.csproj", "{F729E10D-5B1B-4444-9020-665EC45D6791}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,10 @@ Global
 		{D80312B4-A092-4ACD-8E05-2EEB71436B04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D80312B4-A092-4ACD-8E05-2EEB71436B04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D80312B4-A092-4ACD-8E05-2EEB71436B04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F729E10D-5B1B-4444-9020-665EC45D6791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F729E10D-5B1B-4444-9020-665EC45D6791}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F729E10D-5B1B-4444-9020-665EC45D6791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F729E10D-5B1B-4444-9020-665EC45D6791}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -182,6 +188,7 @@ Global
 		{6EAE16B5-6EB0-439B-B959-78B697E1D236} = {992BECAD-20B6-442B-8FFD-507CA5D4D9E4}
 		{D80312B4-A092-4ACD-8E05-2EEB71436B04} = {852EEB48-186B-4E5A-AFFE-647AD3A09D1A}
 		{01FF54E3-92D0-4E04-9842-BF244EC88754} = {992BECAD-20B6-442B-8FFD-507CA5D4D9E4}
+		{F729E10D-5B1B-4444-9020-665EC45D6791} = {852EEB48-186B-4E5A-AFFE-647AD3A09D1A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F533D682-BE42-42C2-B02A-61BB41067E73}

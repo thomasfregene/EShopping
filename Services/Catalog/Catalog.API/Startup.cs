@@ -2,6 +2,7 @@
 using Catalog.Core.Repositories;
 using Catalog.Infrastructure.Data;
 using Catalog.Infrastructure.Repositories;
+using Common.Logging.Correlation;
 using HealthChecks.UI.Client;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,7 +25,7 @@ namespace Catalog.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddControllers();
+            services.AddControllers();
             services.AddApiVersioning();
             services.AddHealthChecks()
                 .AddMongoDb(Configuration["DatabaseSettings:ConnectionString"], "Catalog MongoDb Health Check", HealthStatus.Degraded);
@@ -36,6 +37,7 @@ namespace Catalog.API
                     Version = "v1",
                 });
             }));
+
             //DI
             services.AddAutoMapper(typeof(Startup));
             services.AddMediatR(typeof(CreateProductHandler).GetTypeInfo().Assembly);
@@ -43,9 +45,10 @@ namespace Catalog.API
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IBrandRepository, ProductRepository>();
             services.AddScoped<ITypesRepository, ProductRepository>();
+            services.AddScoped<ICorrelationIdGenerator, CorrelationIdGenerator>();
 
             //Identity server
-            var userPolicy = new AuthorizationPolicyBuilder()
+            /*var userPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .Build();
 
@@ -64,7 +67,7 @@ namespace Catalog.API
             services.AddAuthorization(opt =>
             {
                 opt.AddPolicy("CanRead", policy => policy.RequireClaim("scope", "catalogapi.read"));
-            });
+            });*/
           
         }
 
@@ -78,7 +81,8 @@ namespace Catalog.API
             }
 
             app.UseRouting();
-            app.UseAuthentication();
+            //app.AddCorrelationIdMiddleware();
+            //app.UseAuthentication();
             app.UseStaticFiles();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
