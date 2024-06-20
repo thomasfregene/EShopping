@@ -1,4 +1,5 @@
-﻿using Basket.Application.GrpcService;
+﻿using Basket.API.Swagger;
+using Basket.Application.GrpcService;
 using Basket.Application.Handlers;
 using Basket.Application.Mapper;
 using Basket.Core.Repositories;
@@ -10,9 +11,14 @@ using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
 namespace Basket.API
@@ -28,7 +34,16 @@ namespace Basket.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddApiVersioning();
+            services.AddApiVersioning(options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+            });
+            services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
             //Redis settings
             services.AddStackExchangeRedisCache(options =>
             {
@@ -40,14 +55,13 @@ namespace Basket.API
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<DiscountGrpcService>();
             services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(o => o.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]));
-            services.AddSwaggerGen(c =>
+
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "Basket.API",
-                    Version = "v1"
-                });
+                options.OperationFilter<SwaggerDefaultValues>();
             });
+
             services.AddHealthChecks()
                 .AddRedis(Configuration["CacheSettings:ConnectionString"], "Redis Health", HealthStatus.Degraded);
 
@@ -61,39 +75,26 @@ namespace Basket.API
 
             services.AddMassTransitHostedService();
 
-           /* var userPolicy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build();
-
-            services.AddControllers(config =>
-            {
-                config.Filters.Add(new AuthorizeFilter(userPolicy));
-            });
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(opt =>
-                {
-                    opt.Authority = "https://localhost:9009";
-                    opt.Audience = "Basket";
-                });*/
+          
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Basket.API v1");
+                    foreach (var desc in provider.ApiVersionDescriptions)
+                    {
+                        c.SwaggerEndpoint($"/swagger/{desc.GroupName}/swagger.json", desc.GroupName.ToUpperInvariant());
+                    }
                 });
 
             }
 
             app.UseHttpsRedirection();
-            //app.AddCorrelationIdMiddleware();
             app.UseRouting();
-            //app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

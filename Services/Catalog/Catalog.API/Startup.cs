@@ -47,27 +47,7 @@ namespace Catalog.API
             services.AddScoped<ITypesRepository, ProductRepository>();
             services.AddScoped<ICorrelationIdGenerator, CorrelationIdGenerator>();
 
-            //Identity server
-            /*var userPolicy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build();
-
-            services.AddControllers(config =>
-            {
-                config.Filters.Add(new AuthorizeFilter(userPolicy));
-            });
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.Authority = "https://localhost:9009";
-                    options.Audience = "Catalog";
-                });
-
-            services.AddAuthorization(opt =>
-            {
-                opt.AddPolicy("CanRead", policy => policy.RequireClaim("scope", "catalogapi.read"));
-            });*/
+           
           
         }
 
@@ -81,8 +61,6 @@ namespace Catalog.API
             }
 
             app.UseRouting();
-            //app.AddCorrelationIdMiddleware();
-            //app.UseAuthentication();
             app.UseStaticFiles();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

@@ -63,7 +63,6 @@ namespace Ordering.API
             }
 
             app.UseHttpsRedirection();
-            //app.AddCorrelationIdMiddleware();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
