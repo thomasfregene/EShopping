@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
+using EventBus.Messages.Events;
 using EventBus.Messges.Events;
 using Ordering.Application.Commands;
 using Ordering.Application.Responses;
 using Ordering.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ordering.Application.Mappers
 {
@@ -19,6 +15,7 @@ namespace Ordering.Application.Mappers
             CreateMap<Order, CheckoutOrderCommand>().ReverseMap();
             CreateMap<Order, UpdateOrderCommand>().ReverseMap();
             CreateMap<CheckoutOrderCommand, BasketCheckoutEvent>().ReverseMap();
+            CreateMap<CheckoutOrderCommand, BasketCheckoutEventV2>().ReverseMap();
         }
     }
 }

@@ -23,5 +23,6 @@ namespace Ordering.Application.Responses
         public string? Expiration { get; set; }
         public string? Cvv { get; set; }
         public int? PaymentMethod { get; set; }
+        public DateTime? DateCreated { get; set; }
     }
 }
